@@ -1,7 +1,0 @@
-package com.digitalbooks.utils;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-
-public class BookInvoiceGenerator {
-	PDDocument pdf=new PDDocument();
-}
