@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <input type="text" placeholder="Email" [(ngModel)]='author.emailId' required/>
+    <br/>
+    <input type="password" placeholder="Password" [(ngModel)]='author.password' required/>
+    <br/>
+    <button class='btn btn-primary' (click)='authorLogin()'>SignIn</button>
+    <button *ngIf='loginStatus=="User logged in"' (click)='onLogout()' class='btn btn-primary'>Logout</button>
+    <br/>
+    <h6>{{loginStatus}}</h6>
+    <div *ngIf='loginStatus=="User logged in"'>
+        <app-createbook [authorId]="author.authorId" class="center"></app-createbook>
+    </div>
+<html>

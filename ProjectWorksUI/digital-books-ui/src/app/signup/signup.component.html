@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+    <input type="text" placeholder="Enter Name" [(ngModel)]='author.name' required/>
+    <br/>
+    <input type="text" placeholder="Email" [(ngModel)]='author.emailId' required/>
+    <br/>
+    <input type="text" placeholder="Password" [(ngModel)]='author.password' required/>
+    <br/>
+    <button class='btn btn-primary' (click)='createAccount()'>SignUp</button>
+</html>
