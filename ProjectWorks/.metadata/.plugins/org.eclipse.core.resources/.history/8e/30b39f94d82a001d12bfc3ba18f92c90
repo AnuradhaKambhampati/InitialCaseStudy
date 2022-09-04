@@ -1,0 +1,9 @@
+package com.digitalbooks.utils;
+
+public final class Constants {
+
+	public static final String USER_EXISTS="User is present";
+	public static final String USER_DOES_NOT_EXIST="User is not present";
+	public static final String LOGIN_SUCCESS="User logged in";
+	
+}

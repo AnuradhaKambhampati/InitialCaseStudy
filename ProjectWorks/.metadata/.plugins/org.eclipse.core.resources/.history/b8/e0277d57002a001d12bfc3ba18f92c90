@@ -1,0 +1,11 @@
+package com.digitalbooks.entity;
+
+public class Payment {
+
+	private int payment_id;
+	private boolean status;
+	private String readerName;
+	private String readerEmail;
+	
+	
+}

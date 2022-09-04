@@ -1,0 +1,11 @@
+package com.digitalbooks.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.digitalbooks.entity.Payment;
+
+public interface PaymentRepository extends JpaRepository<Payment, Integer> {
+	
+	public Payment findByReaderEmail(String emailId);
+
+}

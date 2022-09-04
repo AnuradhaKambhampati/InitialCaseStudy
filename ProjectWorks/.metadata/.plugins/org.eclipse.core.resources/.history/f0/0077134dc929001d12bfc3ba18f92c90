@@ -1,0 +1,16 @@
+package com.digitalbooks.utils;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+
+public class BookInvoiceGenerator {
+	PDDocument pdf=new PDDocument();
+	BookInvoiceGenerator() {
+		PDPage newPage=new PDPage();
+		pdf.addPage(newPage);
+	}
+	
+	public void writeInvoice() {
+		
+	}
+}

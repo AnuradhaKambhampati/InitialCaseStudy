@@ -1,0 +1,5 @@
+package com.digitalbooks.model;
+
+public class BookInvoice {
+
+}

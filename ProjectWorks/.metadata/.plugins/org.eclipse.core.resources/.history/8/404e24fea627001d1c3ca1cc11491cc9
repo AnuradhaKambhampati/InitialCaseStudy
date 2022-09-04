@@ -1,0 +1,24 @@
+package com.digitalbooks.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.digitalbooks.entity.Book;
+import com.digitalbooks.repository.BookRepository;
+
+@Service
+public class DigitalBooksService {
+	
+	@Autowired
+	BookRepository bookRepo;
+	
+	public List<Book> searchBooks(String category,String authorName, float price, String publisher){
+		List<Book> books=new ArrayList<>();
+		bookRepo.findAll();
+		return books;
+	}
+
+}

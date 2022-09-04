@@ -1,0 +1,44 @@
+package com.digitalbooks.entity;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+
+@Entity
+public class Payment {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int payment_id;
+	private PDDocument invoice;
+	private String bookName;
+	private String readerEmail;
+	public int getPayment_id() {
+		return payment_id;
+	}
+	public void setPayment_id(int payment_id) {
+		this.payment_id = payment_id;
+	}
+	public PDDocument getInvoice() {
+		return invoice;
+	}
+	public void setInvoice(PDDocument invoice) {
+		this.invoice = invoice;
+	}
+	public String getBookName() {
+		return bookName;
+	}
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
+	public String getReaderEmail() {
+		return readerEmail;
+	}
+	public void setReaderEmail(String readerEmail) {
+		this.readerEmail = readerEmail;
+	}
+	
+	
+}

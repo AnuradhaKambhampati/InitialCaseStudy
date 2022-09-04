@@ -1,0 +1,51 @@
+package com.digitalbooks.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.digitalbooks.entity.Author;
+import com.digitalbooks.entity.Book;
+import com.digitalbooks.repository.AuthorRepository;
+import com.digitalbooks.repository.BookRepository;
+import com.digitalbooks.utils.Constants;
+
+@Service
+public class DigitalBooksService {
+	
+	@Autowired
+	BookRepository bookRepo;
+	
+	@Autowired
+	AuthorRepository authorRepo;
+	
+	public List<Book> searchBooks(String category,String authorName, float price, String publisher){
+		List<Book> books=new ArrayList<>();
+		books=bookRepo.findByCategoryOrAuthorNameOrPriceOrPublisher(category, authorName, price, publisher);
+		return books;
+	}
+
+	public void buyBook(int bookId, String name, String emailId) {
+		Book book=new Book();
+		Optional<Book> bookOpt=bookRepo.findById(bookId);
+		if(bookOpt.isPresent()) {
+			book=bookOpt.get();
+		}
+	}
+	
+	public Author createAccount(Author author) {
+		return authorRepo.save(author);
+	}
+	
+	public String login(Author author) {
+		String status=Constants.USER_DOES_NOT_EXIST;
+		List<Author> authorsList=authorRepo.findAll();
+		if(authorsList.contains(author)) {
+			status=Constants.USER_EXISTS;
+		}
+		return status;
+	}
+}

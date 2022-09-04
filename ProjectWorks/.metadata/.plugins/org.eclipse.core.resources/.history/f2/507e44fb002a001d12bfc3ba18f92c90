@@ -1,0 +1,14 @@
+package com.digitalbooks.entity;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+
+public class Payment {
+
+	private int payment_id;
+	private boolean isSuccess;
+	private String readerName;
+	private String readerEmail;
+	private PDDocument invoice;
+	
+	
+}

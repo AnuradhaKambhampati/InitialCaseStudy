@@ -1,0 +1,6 @@
+package com.digitalbooks.model;
+
+public class InputRequest {
+
+	
+}
