@@ -9,16 +9,23 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.Data;
+
+@Data
 @Entity
 public class Author {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int authorId;
+	@NotBlank(message="Name should not be blank")
 	private String name;
+	@NotBlank(message="EmailId is mandatory")
 	private String emailId;
+	@NotBlank(message="Password is required")
 	private String password;
 	
 	@JsonManagedReference
@@ -32,37 +39,6 @@ public class Author {
 		this.name = name;
 		this.emailId = emailId;
 		this.password = password;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public int getAuthorId() {
-		return authorId;
-	}
-	public void setAuthorId(int authorId) {
-		this.authorId = authorId;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getEmailId() {
-		return emailId;
-	}
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
-	}
-		
-	public List<Book> getBooks() {
-		return books;
-	}
-	public void setBooks(List<Book> books) {
-		this.books = books;
 	}
 	
 	@Override

@@ -1,47 +1,49 @@
-import { HttpResponse } from '@angular/common/http';
+import { HttpStatusCode } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { BookService } from '../book.service';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css']
+  selector: 'app-reader-signup',
+  templateUrl: './reader-signup.component.html',
+  styleUrls: ['./reader-signup.component.css']
 })
-export class SignupComponent implements OnInit {
-  author={
+export class ReaderSignupComponent implements OnInit {
+  reader={
     name:'',
     emailId:'',
     password:''
   };
-  authorSignUpStatus:String='';
+  emailExists:boolean=false;
+  signUpStatus:String='';
   blankFields={
     name:'',
     emailId:'',
     password:''
   };
+
   constructor(public bookService:BookService) { }
-  createAccount(){
+
+  createReaderAccount(){
     console.log('Clicked!');
-    const promise=this.bookService.createAccount(this.author);
+    const promise=this.bookService.createReaderAccount(this.reader);
     promise.subscribe((response:any)=>{
       console.log(response);
       if(response.status==201){
-        this.authorSignUpStatus='Author Registered!';
+        this.signUpStatus='User Registered!'
       }
     },(error:any)=>{
       console.log(error.error);
       if(error.error=='User is present'){
-        this.authorSignUpStatus=error.error;
+        this.emailExists=true;
+        this.signUpStatus=error.error;
       }
       this.blankFields.name=error.error.name;
       this.blankFields.emailId=error.error.emailId;
       this.blankFields.password=error.error.password;
     }
     )
-    
   }
-
+  
   ngOnInit(): void {
   }
 

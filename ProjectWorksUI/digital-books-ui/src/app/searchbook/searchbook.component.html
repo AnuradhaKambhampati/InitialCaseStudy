@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        div{
+            margin-bottom: 10px;
+        }
+        label{
+            display: inline-block;
+            width: 150px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h4>Search Books</h4> 
+    <form>
+        <div>
+            <label for="category">Category : </label>
+            <input type="text" [(ngModel)]='book.category' id='category' name='category' required/>
+        </div>
+        <div>
+            <label for="authorName">Author : </label>
+            <input type="text" [(ngModel)]='book.authorName' id='authorName' name='authorName' required/>
+        </div>
+        <div>
+            <label for="price">Price : </label>
+            <input type="text" [(ngModel)]='book.price' id='price' name='price' required/>
+        </div>
+        <div>
+            <label for="publisher">Publisher : </label>
+            <input type="text" [(ngModel)]='book.publisher' id='publisher' name='publisher' required/>
+        </div>
+        <button class="btn btn-primary" (click)='searchBook()'>Search</button>
+        <br>
+        <div>
+            <div *ngFor="let book of booksList">
+                <div class="book">
+                    <h5>{{book.title}}</h5>
+                    <p>${{book.price}}</p>
+                    <h5>{{book.authorName}}</h5>
+                    <button (click)='buyBook(book,reader)'>Buy</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>   
+</html>

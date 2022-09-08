@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html>
-  <div>
+  <div class="row">
+    <div class="column">
     <img src="./assets/book-icon-logo.jpg" alt="Book" height="50px" width="50px"/>
     {{title}}
-    <nav>
-      <ul>
-      <li>
+    </div>
+    <nav class="column">
+      <ul class="row">
+      <li class="column">
         <a routerLink='/signup'>Sign Up</a>
       </li>
-      <li>
+      <li class="column">
         <a routerLink='/signin'>Sign In</a>
+      </li>
+      <li class="column">
+        <a routerLink='/readerSignup'>Reader Sign Up</a>
+      </li>
+      <li class="column">
+        <a routerLink='/readerSignin'>Reader Sign In </a>
+      </li>
+      <li class="column">
+        <a routerLink='/'>Home</a>
       </li>
     </ul>
     </nav>

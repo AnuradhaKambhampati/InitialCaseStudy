@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <h4>Reader Sign Up!</h4>
+    <input type="text" placeholder="Enter Name" [(ngModel)]='reader.name' required/>
+    <h6 style="color:red">{{blankFields.name}}</h6>
+    <br/>
+    <input type="text" placeholder="Email" [(ngModel)]='reader.emailId' required/>
+    <h6 style="color:red">{{blankFields.emailId}}</h6>
+    <br/>
+    <input type="password" placeholder="Password" [(ngModel)]='reader.password' required/>
+    <h6 style="color:red">{{blankFields.password}}</h6>
+    <br/>
+    <button class='btn btn-primary' (click)='createReaderAccount()'>SignUp</button>
+    <br/>
+    <h6 style="color:green">{{signUpStatus}}</h6>
+<html>

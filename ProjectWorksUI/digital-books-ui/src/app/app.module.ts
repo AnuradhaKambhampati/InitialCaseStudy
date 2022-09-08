@@ -8,10 +8,15 @@ import { AppComponent } from './app.component';
 import { SignupComponent } from './signup/signup.component';
 import { SigninComponent } from './signin/signin.component';
 import { CreatebookComponent } from './createbook/createbook.component';
+import { ReaderSigninComponent } from './reader-signin/reader-signin.component';
+import { ReaderSignupComponent } from './reader-signup/reader-signup.component';
+import { SearchbookComponent } from './searchbook/searchbook.component';
 
 const routes:Routes=[
   {path:'signup',component:SignupComponent},
-  {path:'signin',component:SigninComponent}
+  {path:'signin',component:SigninComponent},
+  {path:'readerSignup',component:ReaderSignupComponent},
+  {path:'readerSignin',component:ReaderSigninComponent}
 ]
 
 @NgModule({
@@ -20,6 +25,9 @@ const routes:Routes=[
     SignupComponent,
     SigninComponent,
     CreatebookComponent,
+    ReaderSigninComponent,
+    ReaderSignupComponent,
+    SearchbookComponent,
   ],
   imports: [
     BrowserModule,FormsModule,HttpClientModule,RouterModule.forRoot(routes)

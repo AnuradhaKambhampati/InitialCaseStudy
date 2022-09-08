@@ -9,22 +9,32 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import lombok.Data;
+
+@Data
 @Entity
 public class Book {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
+	@NotBlank(message="Please provide title")
 	private String title;
+	@Min(value=1,message="Price should be >=1")
 	private float price;
+	@NotBlank(message="Please enter category")
 	private String category;
 	private String authorName;
+	@NotBlank(message="Please enter publisher details")
 	private String publisher;
 	private Date publishedDate;
 	private String logo;
 	private boolean active;
+	@NotBlank(message="Please enter the content")
 	private String chapter;
 	
 	@JsonBackReference
@@ -32,71 +42,5 @@ public class Book {
 	@JoinColumn(name = "author_id")
 	private Author author;
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public Author getAuthor() {
-		return author;
-	}
-	public void setAuthor(Author author) {
-		this.author = author;
-	}
-	public String getLogo() {
-		return logo;
-	}
-	public void setLogo(String logo) {
-		this.logo = logo;
-	}
-	public boolean isActive() {
-		return active;
-	}
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-	public String getChapter() {
-		return chapter;
-	}
-	public void setChapter(String chapter) {
-		this.chapter = chapter;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public float getPrice() {
-		return price;
-	}
-	public void setPrice(float price) {
-		this.price = price;
-	}
-	public String getCategory() {
-		return category;
-	}
-	public void setCategory(String category) {
-		this.category = category;
-	}
 	
-	public String getAuthorName() {
-		return authorName;
-	}
-	public void setAuthorName(String authorName) {
-		this.authorName = authorName;
-	}
-	public String getPublisher() {
-		return publisher;
-	}
-	public void setPublisher(String publisher) {
-		this.publisher = publisher;
-	}
-	public Date getPublishedDate() {
-		return publishedDate;
-	}
-	public void setPublishedDate(Date publishedDate) {
-		this.publishedDate = publishedDate;
-	}
 }

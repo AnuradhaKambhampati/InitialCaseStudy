@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    <h4>Author Sign In!</h4>
     <input type="text" placeholder="Email" [(ngModel)]='author.emailId' required/>
     <br/>
     <input type="password" placeholder="Password" [(ngModel)]='author.password' required/>
@@ -7,8 +8,11 @@
     <button class='btn btn-primary' (click)='authorLogin()'>SignIn</button>
     <button *ngIf='loginStatus=="User logged in"' (click)='onLogout()' class='btn btn-primary'>Logout</button>
     <br/>
-    <h6>{{loginStatus}}</h6>
+    <h6 style="color:green">{{loginStatus}}</h6>
     <div *ngIf='loginStatus=="User logged in"'>
+        <div>
+            <button (click)='allMyBooks()'>All My Books</button>
+        </div>
         <app-createbook [authorId]="author.authorId" class="center"></app-createbook>
     </div>
 <html>

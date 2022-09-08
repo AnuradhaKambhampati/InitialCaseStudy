@@ -18,22 +18,26 @@
         <div>
             <label for="title">Title : </label>
             <input type="text" [(ngModel)]='book.title' id='title' name='title' required/>
+            <p style="color:red">{{blankFields.title}}</p>
         </div>
         <div>
             <label for="category">Category : </label>
             <input type="text" [(ngModel)]='book.category' id='category' name='category' required/>
+            <p style="color:red">{{blankFields.category}}</p>
         </div>
         <div>
             <label for="price">Price : </label>
             <input type="text" [(ngModel)]='book.price' id='price' name='price' required/>
+            <p style="color:red">{{blankFields.price}}</p>
         </div>
         <div>
             <label for="publisher">Publisher : </label>
             <input type="text" [(ngModel)]='book.publisher' id='publisher' name='publisher' required/>
+            <p style="color:red">{{blankFields.publisher}}</p>
         </div>
         <div>
             <label for="publishedDate">Published date : </label>
-            <input type="date" [(ngModel)]='book.publishedDate' id='publishedDate' name='publishedDate' required/>
+            <input type="date" [(ngModel)]='book.publishedDate' id='publishedDate' name='publishedDate'/>
         </div>
         <div>
             <label for="active">Active : </label>
@@ -45,8 +49,10 @@
         <div>
             <label for="chapter">Content : </label>
             <textarea type="textarea" [(ngModel)]='book.chapter' id='chapter' name='chapter' required></textarea>
+            <p style="color:red">{{blankFields.chapter}}</p>
         </div>
         <button class="btn btn-primary" (click)='createBook()'>Save</button>
+        <h5 style="color:green">{{bookStatus}}</h5>
     </form>
     </body>
 </html>

@@ -1,14 +1,23 @@
 package com.digitalbooks.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +35,7 @@ import com.digitalbooks.model.InputRequest;
 import com.digitalbooks.repository.AuthorRepository;
 import com.digitalbooks.repository.BookRepository;
 import com.digitalbooks.repository.PaymentRepository;
+import com.digitalbooks.repository.ReaderRepository;
 import com.digitalbooks.service.DigitalBooksService;
 import com.digitalbooks.utils.Constants;
 
@@ -42,6 +52,8 @@ public class DigitalBooksController {
 	BookRepository bookRepo;
 	@Autowired
 	PaymentRepository payRepo;
+	@Autowired
+	ReaderRepository readerRepo;
 	
 	@GetMapping("/books/search")
 	public List<Book> searchBooks(@RequestParam("category") String category, @RequestParam("author") String authorName,
@@ -66,7 +78,7 @@ public class DigitalBooksController {
 		return purchasedBooks;
 	}
 	
-	@GetMapping("/readers/{emailId}/books/{bookId}")
+	@GetMapping(path="/readers/{emailId}/books/{bookId}",produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity readBook(@PathVariable String emailId, @PathVariable int bookId) {
 		ResponseEntity response=null;
 		String chapters="";
@@ -80,7 +92,7 @@ public class DigitalBooksController {
 	}
 	
 	@PostMapping("/readers/{emailId}/book")
-	public ResponseEntity findPurchasedBookByPaymentId(@PathVariable String emailId, @RequestParam String pid) {
+	public ResponseEntity findPurchasedBookByPaymentId(@PathVariable String emailId, @RequestParam("pid") String pid) {
 		ResponseEntity response=null;
 		Book purchasedBook=null;
 		int paymentId=Integer.parseInt(pid);
@@ -94,7 +106,7 @@ public class DigitalBooksController {
 	}
 	
 	@PostMapping("/author/signup")
-	public ResponseEntity createAccount(@RequestBody Author author) {
+	public ResponseEntity createAccount(@Valid @RequestBody Author author) {
 		Author registeredAuthor=null;
 		ResponseEntity<Author> response=null;
 		Author existingAuthor=authorRepo.findByEmailId(author.getEmailId());
@@ -122,7 +134,7 @@ public class DigitalBooksController {
 	}
 
 	@PostMapping("/author/{authorId}/books")
-	public ResponseEntity<Book> createBook(@RequestBody Book book,@PathVariable int authorId) {
+	public ResponseEntity<Book> createBook(@Valid @RequestBody Book book,@PathVariable int authorId) {
 		ResponseEntity<Book> response=null;
 		Book createdBook=bookService.createBook(book,authorId);
 		response= new ResponseEntity<Book>(createdBook,HttpStatus.CREATED);
@@ -140,6 +152,48 @@ public class DigitalBooksController {
 										 break;
 		}
 		return book;
+	}
+	
+	//Reader SignUp
+	@PostMapping("/reader/signup")
+	public ResponseEntity createReaderAccount(@Valid @RequestBody Reader reader) {
+		Reader registeredReader=null;
+		ResponseEntity<Reader> response=null;
+		Optional<Reader> readerOpt=readerRepo.findById(reader.getEmailId());
+		Reader existingReader=null;
+		if(readerOpt.isPresent()) {
+			existingReader=readerOpt.get();
+		}
+		if(existingReader!=null && reader.getEmailId().equals(existingReader.getEmailId())) {
+			return new ResponseEntity<>(Constants.USER_EXISTS,HttpStatus.BAD_REQUEST);
+		}else {
+			registeredReader=bookService.createReaderAccount(reader);
+			response=new ResponseEntity<>(registeredReader,HttpStatus.CREATED);
+		}
+		return response;
+	}
+	
+	@PostMapping(path="/reader/login",produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity readerLogin(@Valid @RequestBody Reader reader) {
+		ResponseEntity<Reader> response=null;
+		String status=bookService.readerLogin(reader);
+		if(status.equals(Constants.USER_EXISTS)) {
+			response= new ResponseEntity<>(reader, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(status, HttpStatus.NOT_FOUND);
+		}
+		return response;
+	}
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Object> handleException(MethodArgumentNotValidException e) {
+		Map<String,String> errorMap=new HashMap<>();
+		e.getBindingResult().getAllErrors().forEach((error)->{
+			String field=((FieldError) error).getField();
+			String message=((FieldError) error).getDefaultMessage();
+			errorMap.put(field, message);
+		});
+		return new ResponseEntity<Object>(errorMap,HttpStatus.BAD_REQUEST);
 	}
 }
 

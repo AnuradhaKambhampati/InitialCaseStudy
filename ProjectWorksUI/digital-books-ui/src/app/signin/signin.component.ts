@@ -35,6 +35,10 @@ export class SigninComponent implements OnInit {
     console.log('Logged Out!');
     this.router.navigateByUrl('/');
   }
+
+  allMyBooks(){
+    console.log('Getting books..');
+  }
   ngOnInit(): void {
   }
 

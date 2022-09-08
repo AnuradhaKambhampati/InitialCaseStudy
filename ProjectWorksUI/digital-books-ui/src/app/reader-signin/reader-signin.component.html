@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<div class="row">
+    <div class="column">
+        <div *ngIf="signInFlag">
+            <h4>Reader Sign In!</h4>
+            <input type="text" placeholder="Enter Name" [(ngModel)]='reader.name' required/>
+            <h6 style="color:red">{{blankFields.name}}</h6>
+            <br/>
+            <input type="text" placeholder="Email" [(ngModel)]='reader.emailId' required/>
+            <h6 style="color:red">{{blankFields.emailId}}</h6>
+            <br/>
+            <input type="password" placeholder="Password" [(ngModel)]='reader.password' required/>
+            <h6 style="color:red">{{blankFields.password}}</h6>
+            <br/>
+            <button class='btn btn-primary' (click)='readerLogin()'>SignIn</button>
+        </div>
+        <button *ngIf='readerLoginStatus=="Reader logged In"' (click)='onLogout()' class='btn btn-primary'>Logout</button>
+        <br/>
+        <h6 style="color:green">{{readerLoginStatus}}</h6>
+        <div *ngIf='readerLoginStatus=="Reader logged In"'>
+            <h5 style="background-color: beige">Find your book by PaymentId</h5>
+            <input type="text" placeholder="Enter Payment Id" [(ngModel)]='paymentId' required/>
+            <br/>
+            <button class="btn btn-info" (click)='findBooksUsingPid(reader)'>Enter</button>
+            <h6 style="color:red" *ngIf="pIdErrorFlag">{{pIdErrorMsg}}</h6>
+            <div class="book" *ngIf="!pIdErrorFlag">
+                <h5 style="color:blueviolet">{{bookWithPid.title}}</h5>
+                <h6>{{bookWithPid.authorName}}</h6>
+                <h6>{{bookWithPid.category}}</h6>
+            </div>
+        </div>
+        <div *ngIf='readerLoginStatus=="Reader logged In"'>
+            <button class="btn btn-info" (click)='allReaderBooks(reader)'>All My Books</button>
+        </div>
+        <div *ngIf="readFlag">
+            <div *ngFor="let book of readerBooks">
+                <div class="book">
+                    <h5 style="color:brown">{{book.title}}</h5>
+                    <h6>{{book.authorName}}</h6>
+                    <button style="color:cadetblue" (click)="readBook(reader,book.id)">Read</button>
+                </div>
+            </div>
+        </div>
+        <p *ngIf="!readFlag">{{bookContent}}</p>
+    </div>
+    <div class="column" *ngIf='readerLoginStatus=="Reader logged In"'>
+        <app-searchbook class="center" [reader]="reader"></app-searchbook>
+    </div>
+</div>
+<html>

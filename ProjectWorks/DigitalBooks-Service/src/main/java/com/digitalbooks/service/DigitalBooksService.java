@@ -41,7 +41,7 @@ public class DigitalBooksService {
 	public int buyBook(int bookId, Reader reader) {
 		//List<Book> readerBookList=new ArrayList<>();
 		Payment payment=new Payment();
-		Book book=new Book();
+		Book book=null;
 		Optional<Book> bookOpt=bookRepo.findById(bookId);
 		if(bookOpt.isPresent()) {
 			book=bookOpt.get();
@@ -122,6 +122,25 @@ public class DigitalBooksService {
 		return status;
 	}
 	
+	public String readerLogin(Reader reader) {
+		String status=Constants.USER_DOES_NOT_EXIST;
+		Optional<Reader> readerOpt=readerRepo.findById(reader.getEmailId());
+		Reader existingReader=null;
+		if(readerOpt.isPresent()) {
+			existingReader=readerOpt.get();
+		}		
+		if(existingReader!=null) {
+			if(reader.getEmailId().equals(existingReader.getEmailId()) && reader.getPassword().equals(existingReader.getPassword())) {
+				{
+					status=Constants.USER_EXISTS;
+					reader.setEmailId(existingReader.getEmailId());
+					reader.setName(existingReader.getName());
+					reader.setPassword(existingReader.getPassword());
+				}
+			}
+		}
+		return status;
+	}
 	public Book createBook(Book book, int authorId) {
 		Author author=new Author();
 		Optional<Author> authorOpt=authorRepo.findById(authorId);
@@ -163,5 +182,9 @@ public class DigitalBooksService {
 		payment.setBookName(book.getTitle());
 		payment.setReaderEmail(reader.getEmailId());
 		return payRepo.save(payment);
+	}
+	
+	public Reader createReaderAccount(Reader reader) {
+		return readerRepo.save(reader);
 	}
 }

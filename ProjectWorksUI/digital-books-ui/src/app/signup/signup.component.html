@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html>
+    <h4>Author Sign Up!</h4>
     <input type="text" placeholder="Enter Name" [(ngModel)]='author.name' required/>
+    <h6 style="color:red">{{blankFields.name}}</h6>
     <br/>
     <input type="text" placeholder="Email" [(ngModel)]='author.emailId' required/>
+    <h6 style="color:red">{{blankFields.emailId}}</h6>
     <br/>
-    <input type="text" placeholder="Password" [(ngModel)]='author.password' required/>
+    <input type="password" placeholder="Password" [(ngModel)]='author.password' required/>
+    <h6 style="color:red">{{blankFields.password}}</h6>
     <br/>
     <button class='btn btn-primary' (click)='createAccount()'>SignUp</button>
+    <br/>
+    <h6 style="color:green">{{authorSignUpStatus}}</h6>
 </html>

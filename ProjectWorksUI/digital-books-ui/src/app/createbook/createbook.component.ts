@@ -9,7 +9,7 @@ import { BookService } from '../book.service';
 export class CreatebookComponent implements OnInit {
   book={
     title:'',
-    price:0.0,
+    price:0,
     category:'',
     authorName:'',
     publisher:'',
@@ -18,15 +18,34 @@ export class CreatebookComponent implements OnInit {
     active:Boolean,
     chapter:''
   }
+  blankFields={
+    title:'',
+    price:'',
+    category:'',
+    authorName:'',
+    publisher:'',
+    publishedDate:Date,
+    logo:'',
+    active:Boolean,
+    chapter:''
+  }
+  bookStatus:string='';
   @Input() authorId:any;
+
   constructor(public bookService:BookService) { }
   createBook(){
     const promise=this.bookService.createBook(this.book,this.authorId);
     promise.subscribe((responseBody: any)=>{
       console.log(responseBody);
+      this.bookStatus="Book Created";
     },
     (error:any)=>{
       console.log(error);
+      this.blankFields.title=error.error.title;
+      this.blankFields.price=error.error.price;
+      this.blankFields.category=error.error.category;
+      this.blankFields.publisher=error.error.publisher;
+      this.blankFields.chapter=error.error.chapter;
     }
     );
   }

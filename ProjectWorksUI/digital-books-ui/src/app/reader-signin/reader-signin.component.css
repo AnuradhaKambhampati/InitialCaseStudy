@@ -1,0 +1,18 @@
+.center{
+    text-align: center;
+}
+.row{
+    display: flex;
+}
+.column{
+    flex:50%;
+}
+.book{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    margin: auto;
+    text-align: center;
+    font-family: arial;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
