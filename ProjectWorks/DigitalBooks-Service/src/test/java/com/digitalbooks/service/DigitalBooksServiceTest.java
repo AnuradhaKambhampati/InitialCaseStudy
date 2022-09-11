@@ -2,6 +2,7 @@ package com.digitalbooks.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,13 +43,14 @@ class DigitalBooksServiceTest {
 		List<Book> bookList=new ArrayList<>();
 		Book book1=new Book();
 		book1.setCategory("Fiction");
-		book1.setPrice(200);
+		book1.setPrice(BigDecimal.valueOf(200));
 		book1.setAuthorName("Jones");
 		book1.setPublisher("Penguin & Co.");
+		book1.setActive(true);
 		bookList.add(book1);
 		String category="Fiction";
 		String authorName="Chetan";
-		float price=150;
+		BigDecimal price=BigDecimal.valueOf(200);
 		String publisher="Simon&Co.";
 		Mockito.when(bookRepo.findByCategoryOrAuthorNameOrPriceOrPublisher(category, authorName, price, publisher)).thenReturn(bookList);
 		List<Book> booksList=bookService.searchBooks(category,authorName,price,publisher);
@@ -103,7 +105,7 @@ class DigitalBooksServiceTest {
 		book.setTitle("Java Coders");
 		book.setActive(true);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		Author author=new Author("Chetan", "chetan@gmail.com", "chetan");
 		Optional<Author> authOpt=Optional.of(author);
 		Mockito.when(authorRepo.findById(authorId)).thenReturn(authOpt);
@@ -119,7 +121,7 @@ class DigitalBooksServiceTest {
 		book.setTitle("Java Coders");
 		book.setActive(true);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(200));
 		bookList.add(book);
 		List<Payment> payList=new ArrayList<>();
 		Payment payment=new Payment();
@@ -145,7 +147,7 @@ class DigitalBooksServiceTest {
 		book.setTitle("Java Coders");
 		book.setActive(true);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		book.setChapter("Love Coding!");
 		bookList.add(book);
  		List<Payment> payList=new ArrayList<>();
@@ -171,7 +173,7 @@ class DigitalBooksServiceTest {
 		book.setTitle("Java Coders");
 		book.setActive(true);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		book.setChapter("Love Coding!");
  		Payment payment=new Payment();
 		payment.setBookId(book.getId());
@@ -181,7 +183,7 @@ class DigitalBooksServiceTest {
 		Optional<Book> bookOpt=Optional.of(book);
  		Mockito.when(payRepo.findByPaymentIdAndReaderEmail(pid, emailId)).thenReturn(payment);
 		Mockito.when(bookRepo.findById(book.getId())).thenReturn(bookOpt);		
- 		Book actualBook=bookService.findPurchasedBookByPaymentId(emailId, pid);
+ 		Book actualBook=bookService.findPurchasedBookByPaymentId(emailId, pid,book);
  		assertEquals(book, actualBook);
 	}
 	
@@ -196,7 +198,7 @@ class DigitalBooksServiceTest {
 		book.setTitle("Java Coders");
 		book.setActive(false);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		book.setChapter("Love Coding!");
 		book.setAuthor(author);
 		Optional<Book> bookOpt=Optional.of(book);
@@ -217,7 +219,7 @@ class DigitalBooksServiceTest {
 		book.setTitle("Java Coders");
 		book.setActive(true);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		book.setChapter("Love Coding!");
 		book.setAuthor(author);
 		Optional<Book> bookOpt=Optional.of(book);
@@ -250,6 +252,50 @@ class DigitalBooksServiceTest {
 		Mockito.when(readerRepo.findById(reader.getEmailId())).thenReturn(readerOpt);
 		assertEquals(Constants.USER_EXISTS,bookService.readerLogin(reader));
 		
+	}
+	
+	@Test
+	void testFindAllAuthorBooks() {
+		int authorId=1;
+		Author author=new Author("Chetan", "chetan@gmail.com", "chetan");
+		author.setAuthorId(authorId);
+		List<Book> list=new ArrayList<>();
+		Book book=new Book();
+		book.setId(1);
+		book.setTitle("Java Coders");
+		book.setActive(true);
+		book.setCategory("Fiction");
+		book.setPrice(BigDecimal.valueOf(150));
+		book.setChapter("Love Coding!");
+		book.setAuthor(author);
+		list.add(book);
+		Optional<Author> authorOpt=Optional.of(author);
+		Mockito.when(authorRepo.findById(authorId)).thenReturn(authorOpt);
+		Mockito.when(bookRepo.findByAuthor(author)).thenReturn(list);
+		assertEquals(list,bookService.findAllAuthorBooks(authorId));
+	}
+	
+	@Test
+	void testReturnBook() {
+		int bookId=2;
+		String emailId="anu@gmail.com";
+		Book book=new Book();
+		book.setId(bookId);
+		book.setTitle("Java Coders");
+		book.setActive(true);
+		book.setCategory("Fiction");
+		book.setPrice(BigDecimal.valueOf(150));
+		book.setChapter("Love Coding!");
+ 		List<Payment> payList=new ArrayList<>();
+		Payment payment=new Payment();
+		payment.setBookId(book.getId());
+		payment.setBookName(book.getTitle());
+		payment.setPaymentId(1);
+		payment.setReaderEmail(emailId);
+		payList.add(payment);
+		Mockito.when(payRepo.findByReaderEmail(emailId)).thenReturn(payList);
+		Mockito.doNothing().when(payRepo).deleteById(payment.getPaymentId());
+		assertEquals(1,bookService.returnBook(emailId, bookId));
 	}
 }
 

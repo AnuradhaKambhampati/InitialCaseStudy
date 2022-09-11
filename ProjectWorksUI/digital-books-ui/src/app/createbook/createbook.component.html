@@ -35,9 +35,14 @@
             <input type="text" [(ngModel)]='book.publisher' id='publisher' name='publisher' required/>
             <p style="color:red">{{blankFields.publisher}}</p>
         </div>
+      <!--<div>
+            <label for="logo">Logo : </label>
+            <input type="file" (change)="onFileSelected($event)"[(ngModel)]='book.logo' id='logo' name='logo'/>
+        </div>-->
         <div>
             <label for="publishedDate">Published date : </label>
-            <input type="date" [(ngModel)]='book.publishedDate' id='publishedDate' name='publishedDate'/>
+            <input type="date" [(ngModel)]='book.publishedDate' id='publishedDate' name='publishedDate' required/>
+            <p style="color:red">{{blankFields.publishedDate}}</p>
         </div>
         <div>
             <label for="active">Active : </label>

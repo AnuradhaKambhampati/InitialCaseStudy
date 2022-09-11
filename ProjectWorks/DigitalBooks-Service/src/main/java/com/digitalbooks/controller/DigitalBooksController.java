@@ -1,22 +1,22 @@
 package com.digitalbooks.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -57,7 +56,7 @@ public class DigitalBooksController {
 	
 	@GetMapping("/books/search")
 	public List<Book> searchBooks(@RequestParam("category") String category, @RequestParam("author") String authorName,
-			@RequestParam("price") float price, @RequestParam("publisher") String publisher){
+			@RequestParam("price") BigDecimal price, @RequestParam("publisher") String publisher){
 		List<Book> booksList=new ArrayList<>();
 		booksList= bookService.searchBooks(category,authorName,price,publisher);
 		return booksList;
@@ -96,10 +95,10 @@ public class DigitalBooksController {
 		ResponseEntity response=null;
 		Book purchasedBook=null;
 		int paymentId=Integer.parseInt(pid);
-		if(!payRepo.existsById(paymentId)) {
+		if(payRepo.findByPaymentIdAndReaderEmail(paymentId, emailId)==null) {
 			return new ResponseEntity<>(Constants.PAYMENT_ID_DOES_NOT_EXIST,HttpStatus.BAD_REQUEST);
 		}else {
-			purchasedBook=bookService.findPurchasedBookByPaymentId(emailId, paymentId);
+			purchasedBook=bookService.findPurchasedBookByPaymentId(emailId, paymentId,purchasedBook);
 			response=new ResponseEntity<>(purchasedBook,HttpStatus.OK);
 		}
 		return response;
@@ -120,7 +119,7 @@ public class DigitalBooksController {
 	}
 	
 	@PostMapping(path="/author/login",produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity login(@RequestBody Author author) {
+	public ResponseEntity login(@Valid @RequestBody Author author) {
 		ResponseEntity<Author> response=null;
 		String status=bookService.login(author);
 		if(status.equals(Constants.USER_EXISTS)) {
@@ -142,16 +141,23 @@ public class DigitalBooksController {
 		
 	}
 	
-	@PutMapping("/author/{authorId}/books/{bookId}/option/{option}")
-	public Book updateBook(@PathVariable int authorId,@PathVariable int bookId, @PathVariable int option) {
+	@PutMapping("/author/{authorId}/books/{bookId}")
+	public Book updateBook(@PathVariable int authorId,@PathVariable int bookId, @RequestParam("option") String option) {
+		Boolean status=Boolean.parseBoolean(option);
 		Book book =null;
-		switch(option) {
-			case Constants.BLOCK_BOOK  : book= bookService.blockBook(authorId,bookId);
-										 break;
-			case Constants.UNBLOCK_BOOK: book= bookService.unblockBook(authorId, bookId);
-										 break;
+		if(status==true){
+			book= bookService.unblockBook(authorId, bookId);
+		}else if(status==false){
+			book= bookService.blockBook(authorId, bookId);
 		}
 		return book;
+	}
+	
+	@GetMapping("/author/{authorId}")
+	public List<Book> findAllAuthorBooks(@PathVariable int authorId) {
+		List<Book> authorBooks=new ArrayList<>();
+		authorBooks=bookService.findAllAuthorBooks(authorId);
+		return authorBooks;
 	}
 	
 	//Reader SignUp
@@ -183,6 +189,16 @@ public class DigitalBooksController {
 			return new ResponseEntity<>(status, HttpStatus.NOT_FOUND);
 		}
 		return response;
+	}
+	
+	@DeleteMapping("/reader/return/{emailId}/book/{bookId}")
+	public ResponseEntity returnBook(@PathVariable String emailId,@PathVariable int bookId ) {
+		Integer id=bookService.returnBook(emailId, bookId);
+		if(id!=null) {
+			return new ResponseEntity<>("Book Successfully returned",HttpStatus.OK);
+		}
+		return new ResponseEntity<>("Book not returned",HttpStatus.BAD_REQUEST);
+		
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)

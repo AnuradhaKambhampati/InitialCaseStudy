@@ -5,6 +5,7 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -72,11 +73,11 @@ class DigitalBooksControllerTest {
 		Book book=new Book();
 		book.setCategory("Fiction");
 		//book.setCategory(CATEGORY.FICTION);
-		book.setPrice(200);
+		book.setPrice(BigDecimal.valueOf(200));
 		book.setAuthorName("Jones");
 		book.setPublisher("Penguin & Co.");
 		bookList.add(book);
-		float priceConv=Float.parseFloat(price);
+		BigDecimal priceConv=new BigDecimal(price);
 		System.out.println(priceConv);
 		Mockito.when(bookService.searchBooks(category, authorName, priceConv, publisher)).thenReturn(bookList);
 		RequestBuilder requestBuilder=MockMvcRequestBuilders.get("/digitalbooks/books/search")
@@ -134,7 +135,7 @@ class DigitalBooksControllerTest {
 		book.setTitle("Java Coders");
 		book.setActive(true);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		bookList.add(book);
 		Mockito.when(bookService.findPurchasedBooks(Mockito.anyString())).thenReturn(bookList);
 		RequestBuilder requestBuilder=MockMvcRequestBuilders.get("/digitalbooks/readers/{emailId}/books",emailId)
@@ -156,7 +157,7 @@ class DigitalBooksControllerTest {
 		book.setTitle("Java Coders");
 		book.setActive(true);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		book.setChapter("Love Coding!");
 		Mockito.when(bookRepo.existsById(book.getId())).thenReturn(true);	
 		Mockito.when(bookService.readBook(emailId, book.getId())).thenReturn(book.getChapter());
@@ -178,7 +179,7 @@ class DigitalBooksControllerTest {
 		book.setTitle("Java Coders");
 		book.setActive(true);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		book.setChapter("Love Coding!");
 		Mockito.when(bookRepo.existsById(book.getId())).thenReturn(false);	
 		Mockito.when(bookService.readBook(emailId, book.getId())).thenReturn(book.getChapter());
@@ -196,11 +197,16 @@ class DigitalBooksControllerTest {
 	@Test
 	void testFindPurchasedBookByPaymentId() throws Exception {
 		Book book=new Book();
+		book.setTitle("Java Coding");
 		String emailId="anu@gmail.com";
  		String pidS="1";
  		int pid=Integer.parseInt(pidS);
-		Mockito.when(payRepo.existsById(Mockito.anyInt())).thenReturn(true);
-		Mockito.when(bookService.findPurchasedBookByPaymentId(emailId, pid)).thenReturn(book);
+ 		Payment payment=new Payment();
+ 		payment.setPaymentId(pid);
+ 		payment.setReaderEmail(emailId);
+ 		payment.setBookName(book.getTitle());
+		Mockito.when(payRepo.findByPaymentIdAndReaderEmail(pid,emailId)).thenReturn(payment);
+		Mockito.when(bookService.findPurchasedBookByPaymentId(emailId,pid,book)).thenReturn(book);
 		RequestBuilder requestBuilder=MockMvcRequestBuilders.post("/digitalbooks/readers/{emailId}/book",emailId)
 															.param("pid", pidS);
 		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
@@ -212,11 +218,12 @@ class DigitalBooksControllerTest {
 	@Test
 	void testFindPurchasedBookByPaymentIdIfIdDoesNotExist() throws Exception {
 		Book book=new Book();
+		book.setTitle("Java Coding");
 		String emailId="anu@gmail.com";
  		String pidS="1";
  		int pid=Integer.parseInt(pidS);
-		Mockito.when(payRepo.existsById(Mockito.anyInt())).thenReturn(false);
-		Mockito.when(bookService.findPurchasedBookByPaymentId(emailId, pid)).thenReturn(book);
+		Mockito.when(payRepo.findByPaymentIdAndReaderEmail(pid,emailId)).thenReturn(null);
+		Mockito.when(bookService.findPurchasedBookByPaymentId(emailId,pid,book)).thenReturn(book);
 		RequestBuilder requestBuilder=MockMvcRequestBuilders.post("/digitalbooks/readers/{emailId}/book",emailId)
 															.param("pid", pidS);
 		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
@@ -300,7 +307,7 @@ class DigitalBooksControllerTest {
 		book.setTitle("Java Coders");
 		book.setActive(true);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		book.setPublisher("Simon");
 		book.setChapter("Hello world!");
 		Mockito.when(bookService.createBook(book, authorId)).thenReturn(book);
@@ -322,7 +329,7 @@ class DigitalBooksControllerTest {
 		book.setTitle("Java Coders");
 		book.setActive(true);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		Mockito.when(bookService.createBook(book, authorId)).thenReturn(book);
 		String json=mapper.writeValueAsString(book);
 		RequestBuilder requestBuilder=MockMvcRequestBuilders.post("/digitalbooks/author/{authorId}/books",authorId)
@@ -346,11 +353,12 @@ class DigitalBooksControllerTest {
 		book.setTitle("Java Coders");
 		book.setActive(false);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		book.setChapter("Love Coding!");
 		book.setAuthor(author);
 		Mockito.when(bookService.blockBook(authorId, bookId)).thenReturn(book);
-		RequestBuilder requestBuilder=MockMvcRequestBuilders.put("/digitalbooks/author/{authorId}/books/{bookId}/option/{option}",authorId,bookId,1);
+		RequestBuilder requestBuilder=MockMvcRequestBuilders.put("/digitalbooks/author/{authorId}/books/{bookId}",authorId,bookId)
+															.param("option", "false");;
 		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response=result.getResponse();
 		System.out.println(response.getStatus());
@@ -369,11 +377,12 @@ class DigitalBooksControllerTest {
 		book.setTitle("Java Coders");
 		book.setActive(true);
 		book.setCategory("Fiction");
-		book.setPrice(150);
+		book.setPrice(BigDecimal.valueOf(150));
 		book.setChapter("Love Coding!");
 		book.setAuthor(author);
 		Mockito.when(bookService.blockBook(authorId, bookId)).thenReturn(book);
-		RequestBuilder requestBuilder=MockMvcRequestBuilders.put("/digitalbooks/author/{authorId}/books/{bookId}/option/{option}",authorId,bookId,2);
+		RequestBuilder requestBuilder=MockMvcRequestBuilders.put("/digitalbooks/author/{authorId}/books/{bookId}",authorId,bookId)
+															.param("option", "true");
 		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response=result.getResponse();
 		System.out.println(response.getStatus());
@@ -459,6 +468,50 @@ class DigitalBooksControllerTest {
 		System.out.println(response.getContentAsString());
 		assertEquals(HttpStatus.NOT_FOUND.value(),result.getResponse().getStatus());
 		
+	}
+	
+	@Test
+	void testFindAllAuthorBooks() throws Exception {
+		List<Book> bookList=new ArrayList<>();
+		int authorId=2;
+		Book book =new Book();
+		book.setTitle("Java Coders");
+		book.setActive(true);
+		book.setCategory("Fiction");
+		book.setPrice(BigDecimal.valueOf(150));
+		bookList.add(book);
+		Mockito.when(bookService.findAllAuthorBooks(authorId)).thenReturn(bookList);
+		RequestBuilder requestBuilder=MockMvcRequestBuilders.get("/digitalbooks/author/{authorId}",authorId);
+		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response=result.getResponse();
+		String expected="[{\"id\":0,\"title\":\"Java Coders\",\"price\":150,\"category\":\"Fiction\",\"authorName\":null,\"publisher\":null,\"publishedDate\":null,\"logo\":null,\"active\":true,\"chapter\":null}]";
+		assertEquals(HttpStatus.OK.value(),response.getStatus());
+		assertEquals(expected,result.getResponse().getContentAsString());
+
+	}
+	
+	@Test
+	void testReturnBook() throws Exception {
+		int bookId=2;
+		String emailId="anu@gmail.com";
+		Mockito.when(bookService.returnBook(emailId, bookId)).thenReturn(1);
+		RequestBuilder requestBuilder=MockMvcRequestBuilders.delete("/digitalbooks/reader/return/{emailId}/book/{bookId}",emailId,bookId);
+		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response=result.getResponse();
+		assertEquals(HttpStatus.OK.value(),response.getStatus());
+
+	}
+
+	@Test
+	void testReturnBookWhenReturnIsNotSuccessful() throws Exception {
+		int bookId=2;
+		String emailId="anu@gmail.com";
+		Mockito.when(bookService.returnBook(emailId, bookId)).thenReturn(null);
+		RequestBuilder requestBuilder=MockMvcRequestBuilders.delete("/digitalbooks/reader/return/{emailId}/book/{bookId}",emailId,bookId);
+		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response=result.getResponse();
+		assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatus());
+
 	}
 }
 

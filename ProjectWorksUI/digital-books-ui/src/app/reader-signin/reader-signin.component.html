@@ -39,10 +39,12 @@
                     <h5 style="color:brown">{{book.title}}</h5>
                     <h6>{{book.authorName}}</h6>
                     <button style="color:cadetblue" (click)="readBook(reader,book.id)">Read</button>
+                    <button style="color:cadetblue" (click)="returnBook(reader,book.id)">Return</button>
                 </div>
             </div>
         </div>
         <p *ngIf="!readFlag">{{bookContent}}</p>
+        <p style="color:darkblue">{{bookReturnStatus}}</p>
     </div>
     <div class="column" *ngIf='readerLoginStatus=="Reader logged In"'>
         <app-searchbook class="center" [reader]="reader"></app-searchbook>

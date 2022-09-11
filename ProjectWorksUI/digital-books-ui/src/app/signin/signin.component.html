@@ -1,18 +1,57 @@
 <!DOCTYPE html>
 <html>
-    <h4>Author Sign In!</h4>
-    <input type="text" placeholder="Email" [(ngModel)]='author.emailId' required/>
-    <br/>
-    <input type="password" placeholder="Password" [(ngModel)]='author.password' required/>
-    <br/>
-    <button class='btn btn-primary' (click)='authorLogin()'>SignIn</button>
-    <button *ngIf='loginStatus=="User logged in"' (click)='onLogout()' class='btn btn-primary'>Logout</button>
-    <br/>
-    <h6 style="color:green">{{loginStatus}}</h6>
-    <div *ngIf='loginStatus=="User logged in"'>
-        <div>
-            <button (click)='allMyBooks()'>All My Books</button>
+<div class="row">
+    <div class="column">
+        <div *ngIf="signInFlag">
+            <h4>Author Sign In!</h4>
+            <input type="text" placeholder="Enter Name" [(ngModel)]='author.name' required/>
+            <h6 style="color:red">{{blankFields.name}}</h6>
+            <br/>
+            <input type="text" placeholder="Email" [(ngModel)]='author.emailId' required/>
+            <h6 style="color:red">{{blankFields.emailId}}</h6>
+            <br/>
+            <input type="password" placeholder="Password" [(ngModel)]='author.password' required/>
+            <h6 style="color:red">{{blankFields.password}}</h6>
+            <br/>
+            <button class='btn btn-primary' (click)='authorLogin()'>SignIn</button>
         </div>
+        <button *ngIf='loginStatus=="User logged in"' (click)='onLogout()' class='btn btn-primary'>Logout</button>
+        <br/>
+        <h6 style="color:green">{{loginStatus}}</h6>
+        <div *ngIf='loginStatus=="User logged in"'>
+            <button (click)='allMyBooks(author.authorId)'>All My Books</button>
+            <div *ngIf="editFlag==false">
+                <div *ngFor="let book of authorBooks">
+                    <div class="book">
+                        <h5 style="color:brown">{{book.title}}</h5>
+                        <h6>{{book.authorName}}</h6>
+                        <h6 *ngIf="book.active" style="color:green"> Active</h6> 
+                        <h6 *ngIf="!book.active" style="color:red">Not Active</h6> 
+                        <button class="btn btn-info" (click)="onEdit(book)">Edit</button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="editFlag==true">
+                <div class="book">
+                    <h5 style="color:chocolate">{{book.title}}</h5>
+                    <h6>{{book.authorName}}</h6>
+                    <h6>{{book.category}}</h6> 
+                    <h6>${{book.price}}</h6> 
+                    <h6 *ngIf="book.active" style="color:green"> Active</h6> 
+                    <h6 *ngIf="!book.active" style="color:red">Not Active</h6> 
+                    <label for="active">Status : </label>
+                    <select id="active" name=active [(ngModel)]='book.active'>
+                        <option value=true>Active</option>
+                        <option value=false>Inactive</option>
+                    </select>  <br/>
+                    <button class="btn btn-info" (click)="updateBook(author.authorId,book)">Change Status</button>
+                </div>
+                <h6 style="color:green">{{bookStatus}}</h6>
+            </div>
+        </div>
+    </div>
+    <div class="column" *ngIf='loginStatus=="User logged in"'>
         <app-createbook [authorId]="author.authorId" class="center"></app-createbook>
     </div>
+</div>
 <html>

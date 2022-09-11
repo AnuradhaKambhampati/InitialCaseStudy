@@ -1,5 +1,6 @@
 package com.digitalbooks.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,10 +33,16 @@ public class DigitalBooksService {
 	@Autowired
 	ReaderRepository readerRepo;
 	
-	public List<Book> searchBooks(String category,String authorName, float price, String publisher){
-		List<Book> books=new ArrayList<>();
-		books=bookRepo.findByCategoryOrAuthorNameOrPriceOrPublisher(category, authorName, price, publisher);
-		return books;
+	public List<Book> searchBooks(String category,String authorName, BigDecimal price, String publisher){
+		List<Book> bookList=new ArrayList<>();
+		List<Book> activeBookList=new ArrayList<>();
+		bookList=bookRepo.findByCategoryOrAuthorNameOrPriceOrPublisher(category, authorName, price, publisher);
+		for(Book book:bookList) {
+			if(book.isActive()) {
+				activeBookList.add(book);
+			}
+		}
+		return activeBookList;
 	}
 
 	public int buyBook(int bookId, Reader reader) {
@@ -90,13 +97,14 @@ public class DigitalBooksService {
 		return book.getChapter();
 	}
 	
-	public Book findPurchasedBookByPaymentId(String emailId,int pid) {
-		Book book=null;
+	public Book findPurchasedBookByPaymentId(String emailId,int pid,Book book) {
 		Payment pay=payRepo.findByPaymentIdAndReaderEmail(pid, emailId);
-		int bookId=pay.getBookId();
-		Optional<Book> bookOpt=bookRepo.findById(bookId);
-		if(bookOpt.isPresent()) {
-			book=bookOpt.get();
+		if(pay!=null) {
+			int bookId=pay.getBookId();
+			Optional<Book> bookOpt=bookRepo.findById(bookId);
+			if(bookOpt.isPresent()) {
+				book=bookOpt.get();
+			}
 		}
 		return book;
 	}
@@ -186,5 +194,29 @@ public class DigitalBooksService {
 	
 	public Reader createReaderAccount(Reader reader) {
 		return readerRepo.save(reader);
+	}
+	
+	public List<Book> findAllAuthorBooks(int authorId){
+		Author author=null;
+		Optional<Author> authorOpt=authorRepo.findById(authorId);
+		if(authorOpt.isPresent()) {
+			author=authorOpt.get();
+		}
+		List<Book> list=bookRepo.findByAuthor(author);
+		return list;
+	}
+	
+	public Integer returnBook(String emailId, int bookId) {
+		List<Payment> payList=payRepo.findByReaderEmail(emailId);
+		Integer paymentId = null;
+		if(payList!=null) {
+			for(Payment pay:payList) {
+				if(pay.getBookId()==bookId) {
+					paymentId=pay.getPaymentId();
+					payRepo.deleteById(pay.getPaymentId());
+				}
+			}
+		}
+		return paymentId;
 	}
 }

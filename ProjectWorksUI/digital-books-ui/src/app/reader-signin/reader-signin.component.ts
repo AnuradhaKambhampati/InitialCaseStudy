@@ -27,6 +27,7 @@ export class ReaderSigninComponent implements OnInit {
   paymentId:any='';
   pIdErrorMsg:string='';
   pIdErrorFlag:boolean=false;
+  bookReturnStatus:string='';
   bookWithPid={
     id:0,
     title:'',
@@ -96,6 +97,17 @@ export class ReaderSigninComponent implements OnInit {
       console.log(error.error);
       this.pIdErrorMsg=error.error;
       this.pIdErrorFlag=true;
+    });
+  }
+
+  returnBook(reader:any,id:any){
+    const promise=this.bookService.returnBook(reader.emailId,id);
+    promise.subscribe((response:any)=>{
+      console.log(response);
+      this.bookReturnStatus=response;
+     },(error:any)=>{
+      console.log(error.error);
+      this.bookReturnStatus=error.error;
     });
   }
 

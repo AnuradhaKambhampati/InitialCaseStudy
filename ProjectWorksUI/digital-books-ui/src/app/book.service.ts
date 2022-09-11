@@ -63,6 +63,19 @@ export class BookService {
     return this.http.post(URL+'/readers/'+emailId+'/book',params);
   }
 
+  allMyBooks(id:any){
+    return this.http.get(URL+'/author/'+id);
+  }
+
+  updateBook(authorId:any,bookId:any,option:any){
+    let params=new HttpParams().append("option",option);
+    console.log(option);
+    return this.http.put(URL+'/author/'+authorId+'/books/'+bookId, params);
+  }
+
+  returnBook(emailId:any,bookId:any){
+    return this.http.delete(URL+'/reader/return/'+emailId+'/book/'+bookId,{responseType:"text"});
+  }
   constructor(public http:HttpClient) { }
 
 }
