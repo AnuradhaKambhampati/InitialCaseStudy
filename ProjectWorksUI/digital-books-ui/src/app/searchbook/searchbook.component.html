@@ -25,13 +25,14 @@
         </div>
         <div>
             <label for="price">Price : </label>
-            <input type="text" [(ngModel)]='book.price' id='price' name='price' required/>
+            <input type="number" [(ngModel)]='book.price' id='price' name='price'/>
         </div>
         <div>
             <label for="publisher">Publisher : </label>
             <input type="text" [(ngModel)]='book.publisher' id='publisher' name='publisher' required/>
         </div>
         <button class="btn btn-primary" (click)='searchBook()'>Search</button>
+        <p style="color:red">{{booksListStatus}}</p>
         <br>
         <div>
             <div *ngFor="let book of booksList">
@@ -42,6 +43,7 @@
                     <button (click)='buyBook(book,reader)'>Buy</button>
                 </div>
             </div>
+            <h4 style="color: green" *ngIf="buyBookFlag==true">{{buyBookStatus}}</h4>
         </div>
     </form>
 </body>   

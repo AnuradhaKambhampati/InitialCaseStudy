@@ -9,10 +9,21 @@
 }
 .book{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    max-width: 300px;
+    max-width: 200px;
     margin: auto;
     text-align: center;
     font-family: arial;
     margin-top: 20px;
     margin-bottom: 20px;
+    background-color: darkseagreen;
+}
+.form{
+    width: 400px;
+    border-radius: 8px;
+    padding: 20px 40px;
+    box-shadow:0 10px 25px rgba(92, 99, 105, .2);
+}
+.content{
+    box-shadow:0 10px 25px rgba(92, 99, 105, .2);
+    background-color: white;
 }

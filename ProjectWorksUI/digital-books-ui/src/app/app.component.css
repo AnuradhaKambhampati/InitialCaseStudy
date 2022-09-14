@@ -5,3 +5,9 @@
 .column{
     flex:50%;
 }
+.image{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}

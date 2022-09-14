@@ -1,0 +1,12 @@
+.form{
+    width: 400px;
+    border-radius: 8px;
+    padding: 20px 40px;
+    box-shadow:0 10px 25px rgba(92, 99, 105, .2);
+}
+.row{
+    display: flex;
+}
+.column{
+    flex:50%;
+}

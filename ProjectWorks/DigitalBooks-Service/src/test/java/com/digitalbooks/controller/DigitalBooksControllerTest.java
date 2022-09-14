@@ -233,6 +233,20 @@ class DigitalBooksControllerTest {
 	}
 	
 	@Test
+	void testFindPurchasedBookByPaymentIdIsNull() throws Exception {
+		Book book=new Book();
+		book.setTitle("Java Coding");
+		String emailId="anu@gmail.com";
+ 		String pidS="";
+		RequestBuilder requestBuilder=MockMvcRequestBuilders.post("/digitalbooks/readers/{emailId}/book",emailId)
+															.param("pid", pidS);
+		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response=result.getResponse();
+		System.out.println(response.getContentAsString());
+		assertEquals(HttpStatus.BAD_REQUEST.value(),result.getResponse().getStatus());
+	}
+	
+	@Test
 	void testCreateAccountWhenAuthorAlreadyExists() throws Exception {
 		String emailId="anu@gmail.com";
 		Author existingAuthor=new Author("Chetan", "chetan@gmail.com", "chetan");

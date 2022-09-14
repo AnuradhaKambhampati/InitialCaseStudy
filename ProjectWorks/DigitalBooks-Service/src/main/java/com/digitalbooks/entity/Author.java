@@ -9,7 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -24,8 +26,10 @@ public class Author {
 	@NotBlank(message="Name should not be blank")
 	private String name;
 	@NotBlank(message="EmailId is mandatory")
+	@Email(message = "Not a valid email")
 	private String emailId;
 	@NotBlank(message="Password is required")
+	@Size(min = 3,max = 8)
 	private String password;
 	
 	@JsonManagedReference

@@ -21,7 +21,10 @@ export class SearchbookComponent implements OnInit {
     chapter:''
   }
   booksList:any[]=[];
+  booksListStatus:string='';
   paymentId:number=0;
+  buyBookStatus:string='';
+  buyBookFlag:boolean=false;
   @Input() reader={ 
     name:'',
     emailId:'',
@@ -35,10 +38,15 @@ export class SearchbookComponent implements OnInit {
     promise.subscribe((response:any)=>{
       console.log(response);
       this.booksList=response;
-      console.log(this.booksList);
+      this.buyBookFlag=false;
+      if(this.booksList.length==0){
+        this.booksListStatus="No books found";
+      }else{
+        this.booksListStatus="";
+      }
     },
     (error:any)=>{
-      console.log(error);
+      console.log(error.error);
     }
     )
   }
@@ -49,9 +57,15 @@ export class SearchbookComponent implements OnInit {
     promise.subscribe((response:any)=>{
       console.log(response);
       this.paymentId=response;
+      if(this.paymentId!=null){
+        this.buyBookStatus="Purchase Success";
+        this.buyBookFlag=true;
+      }
     },
     (error:any)=>{
       console.log(error);
+      this.buyBookStatus="Purchase Failed";
+      this.buyBookFlag=false;
     }
     )
   }

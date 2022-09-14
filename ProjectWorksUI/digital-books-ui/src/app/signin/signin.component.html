@@ -2,7 +2,7 @@
 <html>
 <div class="row">
     <div class="column">
-        <div *ngIf="signInFlag">
+        <div *ngIf="signInFlag" class="form">
             <h4>Author Sign In!</h4>
             <input type="text" placeholder="Enter Name" [(ngModel)]='author.name' required/>
             <h6 style="color:red">{{blankFields.name}}</h6>
@@ -19,7 +19,7 @@
         <br/>
         <h6 style="color:green">{{loginStatus}}</h6>
         <div *ngIf='loginStatus=="User logged in"'>
-            <button (click)='allMyBooks(author.authorId)'>All My Books</button>
+            <button (click)='allMyBooks(author.authorId)' class="btn btn-info">All My Books</button>
             <div *ngIf="editFlag==false">
                 <div *ngFor="let book of authorBooks">
                     <div class="book">

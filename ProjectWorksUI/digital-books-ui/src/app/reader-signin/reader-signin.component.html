@@ -2,7 +2,7 @@
 <html>
 <div class="row">
     <div class="column">
-        <div *ngIf="signInFlag">
+        <div *ngIf="signInFlag" class="form">
             <h4>Reader Sign In!</h4>
             <input type="text" placeholder="Enter Name" [(ngModel)]='reader.name' required/>
             <h6 style="color:red">{{blankFields.name}}</h6>
@@ -18,8 +18,8 @@
         <button *ngIf='readerLoginStatus=="Reader logged In"' (click)='onLogout()' class='btn btn-primary'>Logout</button>
         <br/>
         <h6 style="color:green">{{readerLoginStatus}}</h6>
-        <div *ngIf='readerLoginStatus=="Reader logged In"'>
-            <h5 style="background-color: beige">Find your book by PaymentId</h5>
+        <div *ngIf='readerLoginStatus=="Reader logged In"' style="border-style:groove">
+            <h5>Find your book by PaymentId</h5>
             <input type="text" placeholder="Enter Payment Id" [(ngModel)]='paymentId' required/>
             <br/>
             <button class="btn btn-info" (click)='findBooksUsingPid(reader)'>Enter</button>
@@ -43,8 +43,8 @@
                 </div>
             </div>
         </div>
-        <p *ngIf="!readFlag">{{bookContent}}</p>
-        <p style="color:darkblue">{{bookReturnStatus}}</p>
+        <p *ngIf="!readFlag" class="content">{{bookContent}}</p>
+        <p style="color:darkblue" *ngIf="returnFlag==true">{{bookReturnStatus}}</p>
     </div>
     <div class="column" *ngIf='readerLoginStatus=="Reader logged In"'>
         <app-searchbook class="center" [reader]="reader"></app-searchbook>

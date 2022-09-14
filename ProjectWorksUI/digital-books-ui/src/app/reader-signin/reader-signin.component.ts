@@ -28,6 +28,7 @@ export class ReaderSigninComponent implements OnInit {
   pIdErrorMsg:string='';
   pIdErrorFlag:boolean=false;
   bookReturnStatus:string='';
+  returnFlag:boolean=false;
   bookWithPid={
     id:0,
     title:'',
@@ -65,6 +66,7 @@ export class ReaderSigninComponent implements OnInit {
       console.log(response);
       this.readerBooks=response;
       this.readFlag=true;
+      this.returnFlag=false;
       console.log(this.readerBooks);
     },(error:any)=>{
       console.log(error.error);
@@ -105,6 +107,7 @@ export class ReaderSigninComponent implements OnInit {
     promise.subscribe((response:any)=>{
       console.log(response);
       this.bookReturnStatus=response;
+      this.returnFlag=true;
      },(error:any)=>{
       console.log(error.error);
       this.bookReturnStatus=error.error;

@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,7 +58,7 @@ public class DigitalBooksController {
 	
 	@GetMapping("/books/search")
 	public List<Book> searchBooks(@RequestParam("category") String category, @RequestParam("author") String authorName,
-			@RequestParam("price") BigDecimal price, @RequestParam("publisher") String publisher){
+			 @RequestParam("price") BigDecimal price, @RequestParam("publisher") String publisher){
 		List<Book> booksList=new ArrayList<>();
 		booksList= bookService.searchBooks(category,authorName,price,publisher);
 		return booksList;
@@ -94,12 +96,19 @@ public class DigitalBooksController {
 	public ResponseEntity findPurchasedBookByPaymentId(@PathVariable String emailId, @RequestParam("pid") String pid) {
 		ResponseEntity response=null;
 		Book purchasedBook=null;
-		int paymentId=Integer.parseInt(pid);
-		if(payRepo.findByPaymentIdAndReaderEmail(paymentId, emailId)==null) {
-			return new ResponseEntity<>(Constants.PAYMENT_ID_DOES_NOT_EXIST,HttpStatus.BAD_REQUEST);
+		Integer paymentId=null;
+		if(!pid.isEmpty()) {
+			paymentId=Integer.parseInt(pid);
+		}
+		if(paymentId!=null) {
+			if(payRepo.findByPaymentIdAndReaderEmail(paymentId, emailId)==null) {
+				return new ResponseEntity<>(Constants.PAYMENT_ID_DOES_NOT_EXIST,HttpStatus.BAD_REQUEST);
+			}else{
+				purchasedBook=bookService.findPurchasedBookByPaymentId(emailId, paymentId,purchasedBook);
+				response=new ResponseEntity<>(purchasedBook,HttpStatus.OK);
+			}
 		}else {
-			purchasedBook=bookService.findPurchasedBookByPaymentId(emailId, paymentId,purchasedBook);
-			response=new ResponseEntity<>(purchasedBook,HttpStatus.OK);
+			return new ResponseEntity<>(Constants.PAYMENT_ID_MISSING,HttpStatus.BAD_REQUEST);
 		}
 		return response;
 	}
@@ -109,7 +118,7 @@ public class DigitalBooksController {
 		Author registeredAuthor=null;
 		ResponseEntity<Author> response=null;
 		Author existingAuthor=authorRepo.findByEmailId(author.getEmailId());
-		if(existingAuthor!=null && author.getEmailId().equals(existingAuthor.getEmailId())) {
+		if(existingAuthor!=null && author.getEmailId().equalsIgnoreCase(existingAuthor.getEmailId())) {
 			return new ResponseEntity<>(Constants.USER_EXISTS,HttpStatus.BAD_REQUEST);
 		}else {
 			registeredAuthor=bookService.createAccount(author);

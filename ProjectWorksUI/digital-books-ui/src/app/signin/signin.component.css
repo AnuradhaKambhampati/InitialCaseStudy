@@ -15,4 +15,11 @@
     font-family: arial;
     margin-top: 20px;
     margin-bottom: 20px;
+    background-color:aliceblue;
+}
+.form{
+    width: 400px;
+    border-radius: 8px;
+    padding: 20px 40px;
+    box-shadow:0 10px 25px rgba(92, 99, 105, .2);
 }
