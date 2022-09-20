@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,8 +29,8 @@ public class Author {
 	@NotBlank(message="EmailId is mandatory")
 	@Email(message = "Not a valid email")
 	private String emailId;
+	@Column(length = 60)
 	@NotBlank(message="Password is required")
-	@Size(min = 3,max = 8)
 	private String password;
 	
 	@JsonManagedReference

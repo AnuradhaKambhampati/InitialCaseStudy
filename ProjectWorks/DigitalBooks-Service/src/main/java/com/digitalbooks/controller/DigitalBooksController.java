@@ -8,14 +8,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import com.digitalbooks.entity.Author;
 import com.digitalbooks.entity.Book;
@@ -132,10 +131,8 @@ public class DigitalBooksController {
 		ResponseEntity<Author> response=null;
 		String status=bookService.login(author);
 		if(status.equals(Constants.USER_EXISTS)) {
-			//response= new ResponseEntity<>(Constants.LOGIN_SUCCESS, HttpStatus.OK);
 			response= new ResponseEntity<>(author, HttpStatus.OK);
 		}else {
-			//return new ResponseEntity<>(status,HttpStatus.NOT_FOUND);
 			return new ResponseEntity<>(status, HttpStatus.NOT_FOUND);
 		}
 		return response;
@@ -220,6 +217,8 @@ public class DigitalBooksController {
 		});
 		return new ResponseEntity<Object>(errorMap,HttpStatus.BAD_REQUEST);
 	}
+	
+	
 }
 
 

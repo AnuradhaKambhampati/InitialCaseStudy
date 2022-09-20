@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.digitalbooks.entity.Author;
@@ -16,6 +18,7 @@ import com.digitalbooks.repository.AuthorRepository;
 import com.digitalbooks.repository.BookRepository;
 import com.digitalbooks.repository.PaymentRepository;
 import com.digitalbooks.repository.ReaderRepository;
+import com.digitalbooks.utils.CATEGORY;
 import com.digitalbooks.utils.Constants;
 
 @Service
@@ -33,6 +36,9 @@ public class DigitalBooksService {
 	@Autowired
 	ReaderRepository readerRepo;
 	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
 	public List<Book> searchBooks(String category,String authorName, BigDecimal price, String publisher){
 		List<Book> bookList=new ArrayList<>();
 		List<Book> activeBookList=new ArrayList<>();
@@ -46,7 +52,6 @@ public class DigitalBooksService {
 	}
 
 	public int buyBook(int bookId, Reader reader) {
-		//List<Book> readerBookList=new ArrayList<>();
 		Payment payment=new Payment();
 		Book book=null;
 		Optional<Book> bookOpt=bookRepo.findById(bookId);
@@ -57,12 +62,6 @@ public class DigitalBooksService {
 		if(book!=null) {
 			payment=calculatePayment(book,reader);
 		}
-		
-//		if(book!=null) {
-//			readerBookList.add(book);
-//			reader.setReaderBooks(readerBookList);
-//			readerRepo.save(reader);
-//		}
 		return payment.getPaymentId();
 	}
 	
@@ -110,6 +109,8 @@ public class DigitalBooksService {
 	}
 	
 	public Author createAccount(Author author) {
+		author.setPassword(passwordEncoder.encode(author.getPassword()));
+		System.out.println(author.getPassword());
 		return authorRepo.save(author);
 		
 	}
@@ -118,7 +119,7 @@ public class DigitalBooksService {
 		String status=Constants.USER_DOES_NOT_EXIST;
 		Author existingAuthor=authorRepo.findByEmailId(author.getEmailId());
 		if(existingAuthor!=null) {
-			if(author.getEmailId().equals(existingAuthor.getEmailId()) && author.getPassword().equals(existingAuthor.getPassword())) {
+			if(author.getEmailId().equals(existingAuthor.getEmailId()) && BCrypt.checkpw(author.getPassword(), existingAuthor.getPassword())) {
 				{
 					status=Constants.USER_EXISTS;
 					author.setAuthorId(existingAuthor.getAuthorId());
@@ -138,7 +139,7 @@ public class DigitalBooksService {
 			existingReader=readerOpt.get();
 		}		
 		if(existingReader!=null) {
-			if(reader.getEmailId().equals(existingReader.getEmailId()) && reader.getPassword().equals(existingReader.getPassword())) {
+			if(reader.getEmailId().equals(existingReader.getEmailId()) && BCrypt.checkpw(reader.getPassword(),existingReader.getPassword())) {
 				{
 					status=Constants.USER_EXISTS;
 					reader.setEmailId(existingReader.getEmailId());
@@ -193,6 +194,8 @@ public class DigitalBooksService {
 	}
 	
 	public Reader createReaderAccount(Reader reader) {
+		reader.setPassword(passwordEncoder.encode(reader.getPassword()));
+		System.out.println(reader.getPassword());
 		return readerRepo.save(reader);
 	}
 	

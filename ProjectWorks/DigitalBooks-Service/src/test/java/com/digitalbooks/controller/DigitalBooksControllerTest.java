@@ -1,9 +1,6 @@
 package com.digitalbooks.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -16,11 +13,14 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -40,11 +40,11 @@ import com.digitalbooks.repository.PaymentRepository;
 import com.digitalbooks.repository.ReaderRepository;
 import com.digitalbooks.service.DigitalBooksService;
 import com.digitalbooks.utils.Constants;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(value = DigitalBooksController.class)
+@AutoConfigureMockMvc(addFilters=false)
 class DigitalBooksControllerTest {
 
 	@Autowired
@@ -65,14 +65,12 @@ class DigitalBooksControllerTest {
 	@Test
 	void testSearchBooks() throws Exception {
 		String category="Fiction";
-		//CATEGORY category=CATEGORY.FICTION;
 		String authorName="Chetan";
 		String price="150";
 		String publisher="Simon&Co.";
 		List<Book> bookList=new ArrayList<>();
 		Book book=new Book();
 		book.setCategory("Fiction");
-		//book.setCategory(CATEGORY.FICTION);
 		book.setPrice(BigDecimal.valueOf(200));
 		book.setAuthorName("Jones");
 		book.setPublisher("Penguin & Co.");

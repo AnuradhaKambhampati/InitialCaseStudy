@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.digitalbooks.entity.Author;
 import com.digitalbooks.entity.Book;
@@ -37,6 +38,8 @@ class DigitalBooksServiceTest {
 	PaymentRepository payRepo;
 	@Mock
 	ReaderRepository readerRepo;
+	@Mock
+	PasswordEncoder passwordEncoder;
 
 	@Test
 	void testSearchBooks() {
@@ -87,14 +90,17 @@ class DigitalBooksServiceTest {
 		Author author=new Author("Chetan", "chetan@gmail.com", "chetan");
 		Author createdAuthor=new Author("Chetan", "chetan@gmail.com", "chetan");
 		createdAuthor.setAuthorId(1);
+		Mockito.when(passwordEncoder.encode(author.getPassword())).thenReturn("$2a$10$E3udanpoQHz6suFYw7hbW.oa5MNEvPW.76XjSsv3NwaLpXfb6u32m");
 		Mockito.when(authorRepo.save(author)).thenReturn(createdAuthor);
 		assertEquals(createdAuthor, bookService.createAccount(author));
 	}
 
 	@Test
 	void testLogin() {
-		Author author=new Author("Chetan", "chetan@gmail.com", "chetan");
-		Mockito.when(authorRepo.findByEmailId(author.getEmailId())).thenReturn(author);
+		Author author=new Author("Deepak", "deepak@gmail.com", "deepak");
+		Author createdAuthor=new Author("Deepak", "deepak@gmail.com", "$2a$10$E3udanpoQHz6suFYw7hbW.oa5MNEvPW.76XjSsv3NwaLpXfb6u32m");
+		createdAuthor.setAuthorId(1);
+		Mockito.when(authorRepo.findByEmailId(author.getEmailId())).thenReturn(createdAuthor);
 		assertEquals(Constants.USER_EXISTS,bookService.login(author));
 	}
 
@@ -247,7 +253,10 @@ class DigitalBooksServiceTest {
 		reader.setEmailId("anu@gmail.com");
 		reader.setName("anu");
 		reader.setPassword("anu");
-		Reader existingReader=reader;
+		Reader existingReader=new Reader();
+		existingReader.setEmailId("anu@gmail.com");
+		existingReader.setName("anu");
+		existingReader.setPassword("$2a$10$uYB11ONF1j4JvgDZEm2.fuGArLRKpSN7BSCEuSNX/Uz52fN4WFqzy");
 		Optional<Reader> readerOpt=Optional.of(existingReader);
 		Mockito.when(readerRepo.findById(reader.getEmailId())).thenReturn(readerOpt);
 		assertEquals(Constants.USER_EXISTS,bookService.readerLogin(reader));

@@ -76,6 +76,12 @@ export class BookService {
   returnBook(emailId:any,bookId:any){
     return this.http.delete(URL+'/reader/return/'+emailId+'/book/'+bookId,{responseType:"text"});
   }
+
+  uploadFile(file:any){
+    const fd=new FormData();
+    fd.append("file",file,file.name);
+    return this.http.post("https://file.io/",fd);
+  }
   constructor(public http:HttpClient) { }
 
 }

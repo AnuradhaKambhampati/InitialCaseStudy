@@ -23,6 +23,7 @@
             <div *ngIf="editFlag==false">
                 <div *ngFor="let book of authorBooks">
                     <div class="book">
+                        <img src="./assets/common-img.jpg" height="70px" width="70px"/>
                         <h5 style="color:brown">{{book.title}}</h5>
                         <h6>{{book.authorName}}</h6>
                         <h6 *ngIf="book.active" style="color:green"> Active</h6> 

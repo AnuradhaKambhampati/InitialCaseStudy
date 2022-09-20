@@ -33,9 +33,11 @@ export class CreatebookComponent implements OnInit {
   bookStatus:string='';
   @Input() authorId:any;
   selectedFile:any=null;
+  fileLink:any='';
 
   constructor(public bookService:BookService,private http:HttpClient) { }
   createBook(){
+    this.book.logo=this.fileLink;
     const promise=this.bookService.createBook(this.book,this.authorId);
     promise.subscribe((responseBody: any)=>{
       console.log(responseBody);
@@ -53,12 +55,21 @@ export class CreatebookComponent implements OnInit {
     );
   }
 
-  //  onFileSelected(event:any){
-  //   console.log(event);
-  //   this.selectedFile=<File> event.target.files[0];
-  //   console.log(this.selectedFile);
-  // }
+  onFileSelected(event:any){
+    console.log(event);
+    this.selectedFile=<File> event.target.files[0];
+    console.log(this.selectedFile);
+  }
   
+  onUpload(){
+    const promise=this.bookService.uploadFile(this.selectedFile);
+    promise.subscribe((event:any)=>{
+      if(typeof event==='object'){
+        console.log(event);
+        this.fileLink=event.link;
+      }
+    });
+  }
   ngOnInit(): void {
   }
 

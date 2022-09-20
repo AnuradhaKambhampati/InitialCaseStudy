@@ -1,0 +1,5 @@
+package com.digitalbooks.utils;
+
+public enum CATEGORY {
+	ACTION,ADVENTURE,HISTORY,MYTHOLOGY,DRAMA,FICTION,NONFICTION,GENERAL
+}

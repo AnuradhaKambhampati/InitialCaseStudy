@@ -27,7 +27,7 @@
         </div>
         <div>
             <label for="price">Price : </label>
-            <input type="text" [(ngModel)]='book.price' id='price' name='price' required/>
+            <input type="number" [(ngModel)]='book.price' id='price' name='price' required/>
             <p style="color:red">{{blankFields.price}}</p>
         </div>
         <div>
@@ -35,10 +35,11 @@
             <input type="text" [(ngModel)]='book.publisher' id='publisher' name='publisher' required/>
             <p style="color:red">{{blankFields.publisher}}</p>
         </div>
-      <!--<div>
+       <div>
             <label for="logo">Logo : </label>
-            <input type="file" (change)="onFileSelected($event)"[(ngModel)]='book.logo' id='logo' name='logo'/>
-        </div>-->
+            <input type="file" (change)="onFileSelected($event)" id='logo' name='logo'/>
+            <button type="button" (click)="onUpload()">Upload</button>
+        </div>
         <div>
             <label for="publishedDate">Published date : </label>
             <input type="date" [(ngModel)]='book.publishedDate' id='publishedDate' name='publishedDate' required/>

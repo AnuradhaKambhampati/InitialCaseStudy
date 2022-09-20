@@ -1,5 +1,6 @@
 package com.digitalbooks.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
@@ -17,8 +18,8 @@ public class Reader {
 	private String emailId;
 	@NotBlank(message="Name should not be blank")
 	private String name;
+	@Column(length = 60)
 	@NotBlank(message="Password is required")
-	@Size(min = 3,max = 8)
 	private String password;
 		
 }

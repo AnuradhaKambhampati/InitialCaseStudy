@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.digitalbooks.entity.Author;
 import com.digitalbooks.entity.Book;
+import com.digitalbooks.utils.CATEGORY;
 
 public interface BookRepository extends JpaRepository<Book, Integer> {
 
